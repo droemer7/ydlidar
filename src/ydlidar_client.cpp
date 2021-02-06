@@ -1,10 +1,10 @@
 /*
  *  YDLIDAR SYSTEM
- *  YDLIDAR ROS Node Client 
+ *  YDLIDAR ROS Node Client
  *
  *  Copyright 2015 - 2018 EAI TEAM
  *  http://www.ydlidar.com
- * 
+ *
  */
 
 #include "ros/ros.h"
@@ -17,12 +17,16 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
     int count = scan->scan_time / scan->time_increment;
     printf("[YDLIDAR INFO]: I heard a laser scan %s[%d]:\n", scan->header.frame_id.c_str(), count);
     printf("[YDLIDAR INFO]: angle_range : [%f, %f]\n", RAD2DEG(scan->angle_min), RAD2DEG(scan->angle_max));
-  
+    float max = 0.0;
     for(int i = 0; i < count; i++) {
-        float degree = RAD2DEG(scan->angle_min + scan->angle_increment * i);
-	if(degree > -5 && degree< 5)
+      float degree = RAD2DEG(scan->angle_min + scan->angle_increment * i);
+      max = degree > max ? degree : max;
+      if(degree > -5 && degree< 5)
         printf("[YDLIDAR INFO]: angle-distance : [%f, %f, %i]\n", degree, scan->ranges[i], i);
     }
+    printf("-------------------------------------------------------\n");
+    printf("[YDLIDAR INFO]: max distance : [%f]\n", max);
+    printf("-------------------------------------------------------\n");
 }
 
 int main(int argc, char **argv)

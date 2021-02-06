@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="ydlidar_client"  pkg="ydlidar"  type="ydlidar_client" output="screen" respawn="true"/>
+
+</launch>
