@@ -26,6 +26,7 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
         printf("[YDLIDAR INFO]: angle-distance : [%f, %f, %i]\n", degree, scan->ranges[i], i);
     }
     printf("-------------------------------------------------------\n");
+    printf("[YDLIDAR INFO]: duration = %.10f\n", scan->scan_time);
     printf("[YDLIDAR INFO]: max distance : [%f]\n", max);
     printf("-------------------------------------------------------\n");
 }
