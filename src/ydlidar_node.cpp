@@ -1,10 +1,10 @@
 /*
  *  YDLIDAR SYSTEM
- *  YDLIDAR ROS Node Client 
+ *  YDLIDAR ROS Node Client
  *
  *  Copyright 2015 - 2018 EAI TEAM
  *  http://www.ydlidar.com
- * 
+ *
  */
 
 #include "ros/ros.h"
@@ -48,7 +48,7 @@ void publish_scan(ros::Publisher *pub,  node_info *nodes,  size_t node_count, ro
 	    intensity = (float)(nodes[i].sync_quality >> 2);
 
         if(i<node_count/2){
-	        index = node_count/2-1-i;	    
+	        index = node_count/2-1-i;
         }else{
 	        index =node_count-1-(i-node_count/2);
         }
@@ -157,8 +157,8 @@ bool getDeviceInfo(std::string port , int& samp_rate, double _frequency, int bau
                         break;
                 }
                 while(_samp_rate != _rate.rate){
-                    YDlidarDriver::singleton()->setSamplingRate(_rate);                    
-                } 
+                    YDlidarDriver::singleton()->setSamplingRate(_rate);
+                }
                 switch(_rate.rate){
                     case 0:
                         _samp_rate=4;
@@ -184,13 +184,13 @@ bool getDeviceInfo(std::string port , int& samp_rate, double _frequency, int bau
                 if(hz>0){
                     while(hz != 0){
                         YDlidarDriver::singleton()->setScanFrequencyAdd(_scan_frequency);
-                        hz--;                    
+                        hz--;
                     }
                     freq = _scan_frequency.frequency/100.0f;
                 }else{
                     while(hz != 0){
                         YDlidarDriver::singleton()->setScanFrequencyDis(_scan_frequency);
-                        hz++;                    
+                        hz++;
                     }
                     freq = _scan_frequency.frequency/100.0f;
                 }
@@ -215,8 +215,8 @@ bool getDeviceInfo(std::string port , int& samp_rate, double _frequency, int bau
 			        break;
                 }
                 while(_samp_rate != _rate.rate){
-                    YDlidarDriver::singleton()->setSamplingRate(_rate);                    
-                } 
+                    YDlidarDriver::singleton()->setSamplingRate(_rate);
+                }
                 switch(_rate.rate){
                     case 0:
                         _samp_rate=4;
@@ -237,13 +237,13 @@ bool getDeviceInfo(std::string port , int& samp_rate, double _frequency, int bau
                 if(hz>0){
                     while(hz != 0){
                         YDlidarDriver::singleton()->setScanFrequencyAdd(_scan_frequency);
-                        hz--;                    
+                        hz--;
                     }
                     freq = _scan_frequency.frequency/100.0f;
                 }else{
                     while(hz != 0){
                         YDlidarDriver::singleton()->setScanFrequencyDis(_scan_frequency);
-                        hz++;                    
+                        hz++;
                     }
                     freq = _scan_frequency.frequency/100.0f;
                 }
@@ -297,9 +297,9 @@ bool getDeviceHealth()
     device_health healthinfo;
 
     op_result = YDlidarDriver::singleton()->getHealth(healthinfo);
-    if (op_result == RESULT_OK) { 
+    if (op_result == RESULT_OK) {
         printf("[YDLIDAR INFO] YDLIDAR running correctly! The health status: %s\n", healthinfo.status==0?"well":"bad");
-        
+
         if (healthinfo.status == 2) {
             if(print ==3)
                 ROS_ERROR("Error, YDLIDAR internal error detected. Please reboot the device to retry.");
@@ -318,7 +318,7 @@ bool getDeviceHealth()
 
 
 int main(int argc, char * argv[]) {
-    ros::init(argc, argv, "ydlidar_node"); 
+    ros::init(argc, argv, "ydlidar_node");
 
     std::string port;
     int baudrate=115200;
@@ -329,15 +329,15 @@ int main(int argc, char * argv[]) {
     result_t op_result;
     int samp_rate;
     std::string list;
-    std::vector<double> ignore_array;  
+    std::vector<double> ignore_array;
     double max_range , min_range;
     double _frequency;
 
     ros::NodeHandle nh;
-    ros::Publisher scan_pub = nh.advertise<sensor_msgs::LaserScan>("scan", 1000);
+    ros::Publisher scan_pub = nh.advertise<sensor_msgs::LaserScan>("laser/scan", 1000);
     ros::NodeHandle nh_private("~");
-    nh_private.param<std::string>("port", port, "/dev/ydlidar"); 
-    nh_private.param<int>("baudrate", baudrate, 115200); 
+    nh_private.param<std::string>("port", port, "/dev/ydlidar");
+    nh_private.param<int>("baudrate", baudrate, 115200);
     nh_private.param<std::string>("frame_id", frame_id, "laser_frame");
     nh_private.param<bool>("angle_fixed", angle_fixed, "true");
     nh_private.param<bool>("resolution_fixed", resolution_fixed, "true");
@@ -345,7 +345,7 @@ int main(int argc, char * argv[]) {
     nh_private.param<bool>("low_exposure", low_exposure, "false");
     nh_private.param<double>("angle_max", angle_max , 180);
     nh_private.param<double>("angle_min", angle_min , -180);
-    nh_private.param<int>("samp_rate", samp_rate, 4); 
+    nh_private.param<int>("samp_rate", samp_rate, 4);
     nh_private.param<double>("range_max", max_range , 16.0);
     nh_private.param<double>("range_min", min_range , 0.08);
     nh_private.param<double>("frequency", _frequency , 7.0);
@@ -363,14 +363,14 @@ int main(int argc, char * argv[]) {
         }
     }
 
-    YDlidarDriver::initDriver(); 
+    YDlidarDriver::initDriver();
     if (!YDlidarDriver::singleton()) {
         ROS_ERROR("YDLIDAR Create Driver fail, exit\n");
         return -2;
     }
 
     if(_frequency<5){
-       _frequency = 7.0; 
+       _frequency = 7.0;
     }
     if(_frequency>12){
         _frequency = 12;
@@ -406,7 +406,7 @@ again:
                 break;
             }
         }
-        
+
         if(seconds > DELAY_SECONDS){
             ROS_ERROR("YDLIDAR Cannot bind to the specified serial port %s" , port.c_str());
 	    YDlidarDriver::singleton()->disconnect();
@@ -414,18 +414,18 @@ again:
             return -1;
         }
     }
-   
+
     bool ret = getDeviceHealth();
     if(!getDeviceInfo(port,samp_rate,_frequency,baudrate)&&!ret){
         checkmodel[baudrate] = true;
         map<int,bool>::iterator it;
         for(it=checkmodel.begin();it!=checkmodel.end();++it){
             if(it->second)
-                continue;  
+                continue;
             print++;
             YDlidarDriver::singleton()->disconnect();
             YDlidarDriver::done();
-            YDlidarDriver::initDriver(); 
+            YDlidarDriver::initDriver();
             if (!YDlidarDriver::singleton()) {
                 ROS_ERROR("YDLIDAR Create Driver fail, exit\n");
                 return -1;
@@ -467,7 +467,7 @@ again:
 	    if(cnt>=3){
             ROS_ERROR("set LOW EXPOSURE MODEL FALIED!!!");
 	    }
-	
+
     }
 
     if(type == 5 || type == 8 || type == 9){
@@ -510,7 +510,7 @@ again:
             return 0;
         }
     }
-	
+
     printf("[YDLIDAR INFO] Now YDLIDAR is scanning ......\n");
     flag = false;
     ros::Time start_scan_time;
@@ -534,7 +534,7 @@ again:
 
             if (op_result == RESULT_OK) {
                 op_result = YDlidarDriver::singleton()->ascendScanData(nodes, count);
-            
+
                 if (op_result == RESULT_OK) {
                     if (angle_fixed) {
                         if(!resolution_fixed){
@@ -542,14 +542,14 @@ again:
                         }else{
                             max_nodes_count = nodes_count;
                         }
-                                                    
+
                          each_angle = 360.0/max_nodes_count;
                          node_info all_nodes[max_nodes_count];
                          memset(all_nodes, 0, max_nodes_count*sizeof(node_info));
 
                          uint64_t end_time = nodes[0].stamp;
                          uint64_t start_time = nodes[0].stamp;
-                    
+
                         for(size_t i = 0; i < count; i++) {
                             if (nodes[i].distance_q2 != 0) {
                                 float angle = (float)((nodes[i].angle_q6_checkbit >> LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)/64.0f);
