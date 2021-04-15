@@ -336,7 +336,7 @@ int main(int argc, char * argv[]) {
 
     ros::NodeHandle nh;
     ros::NodeHandle nh_private("~");
-    nh_private.param<std::string>("topic", topic, "/scan");
+    nh_private.param<std::string>("topic", topic, "scan");
     nh_private.param<std::string>("port", port, "/dev/ydlidar");
     nh_private.param<int>("baudrate", baudrate, 115200);
     nh_private.param<std::string>("frame_id", frame_id, "laser_frame");
