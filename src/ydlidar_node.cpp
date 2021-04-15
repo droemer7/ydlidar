@@ -320,6 +320,7 @@ bool getDeviceHealth()
 int main(int argc, char * argv[]) {
     ros::init(argc, argv, "ydlidar_node");
 
+    std::string topic;
     std::string port;
     int baudrate=115200;
     std::string model;
@@ -334,8 +335,8 @@ int main(int argc, char * argv[]) {
     double _frequency;
 
     ros::NodeHandle nh;
-    ros::Publisher scan_pub = nh.advertise<sensor_msgs::LaserScan>("laser/scan", 1000);
     ros::NodeHandle nh_private("~");
+    nh_private.param<std::string>("topic", topic, "/scan");
     nh_private.param<std::string>("port", port, "/dev/ydlidar");
     nh_private.param<int>("baudrate", baudrate, 115200);
     nh_private.param<std::string>("frame_id", frame_id, "laser_frame");
@@ -352,6 +353,7 @@ int main(int argc, char * argv[]) {
     nh_private.param<std::string>("ignore_array",list,"");
     ignore_array = split(list ,',');
     reversion = false;
+    ros::Publisher scan_pub = nh.advertise<sensor_msgs::LaserScan>(topic, 1000);
 
     if(ignore_array.size()%2){
         ROS_ERROR_STREAM("ignore array is odd need be even");
