@@ -25,6 +25,7 @@ using namespace ydlidar;
 static bool flag = true;
 static int nodes_count = 720;
 static float each_angle = 0.5;
+static double no_obj_range = 0.0;
 int type = 0;
 int print = 0;
 
@@ -54,7 +55,7 @@ void publish_scan(ros::Publisher *pub,  node_info *nodes,  size_t node_count, ro
         }
 
 	    if((range > max_range) || (range < min_range)){
-	        range = 0.0;
+	        range = no_obj_range;
         }
 
 	    int pos = index - node_start ;
@@ -349,6 +350,7 @@ int main(int argc, char * argv[]) {
     nh_private.param<int>("samp_rate", samp_rate, 4);
     nh_private.param<double>("range_max", max_range , 16.0);
     nh_private.param<double>("range_min", min_range , 0.08);
+    nh_private.param<double>("range_no_obj", no_obj_range , 0.0);
     nh_private.param<double>("frequency", _frequency , 7.0);
     nh_private.param<std::string>("ignore_array",list,"");
     ignore_array = split(list ,',');
